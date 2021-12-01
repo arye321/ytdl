@@ -19,7 +19,7 @@ io.on('connection', (socket) => {
 
 
     socket.on('counter', msg => {
-    io.emit('counter', Date());
+        socket.emit('counter', Date());
     })
 
 

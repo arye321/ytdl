@@ -7,13 +7,19 @@ var child_process = require('child_process');
 var readline = require('readline');
 
 function lol(socket,link){
+    console.log("Process Finished.");
     run_script(socket,"yt-dlp", [link], function(filename, exit_code) {
-        var fixedFilename = filename.match(/"([^"]+)"/)[1]
-        console.log("Process Finished.");
+        if (filename){
+            var fixedFilename = filename.match(/"([^"]+)"/)[1]
+        }
+        
+       
         console.log('filename: ' + fixedFilename);
         //console.log('Full output of script: ',output);
         console.log('fin2')
-        socket.emit('finishedDL', fixedFilename);
+        if (filename){
+            socket.emit('finishedDL', fixedFilename);
+        }
     });
 }
 
@@ -30,7 +36,16 @@ function run_script(socket,command, args, callback) {
         var lines = data.split('\n');
         for(var line = 0; line < lines.length; line++){
             var templine = lines[line]
-            if (templine.indexOf("[Merger]")>-1) { filename = templine}
+            if(!filename){
+                if (templine.indexOf("[Merger]")>-1  ) { filename = templine}
+                else if (templine.indexOf("has already been downloaded")>-1  ) { 
+                    filename = templine
+                    filename = filename.replace('[download] ','[download] "')
+                    filename = filename.replace(' has already been ','" has already been ')
+                    console.log("filename====",filename)
+                }
+            }
+            
 
             if (templine.indexOf("[download]")>-1){
             

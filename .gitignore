@@ -2,6 +2,7 @@
 nodemon.json
 *.webm
 *.part
+package-lock.json
 # Logs
 logs
 *.log

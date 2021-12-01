@@ -3,9 +3,60 @@ const app = express()
 const bodyParser = require("body-parser");
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
+var child_process = require('child_process');
+var readline = require('readline');
 
+function lol(socket,link){
+    run_script(socket,"yt-dlp", [link], function(filename, exit_code) {
+        var fixedFilename = filename.match(/"([^"]+)"/)[1]
+        console.log("Process Finished.");
+        console.log('filename: ' + fixedFilename);
+        //console.log('Full output of script: ',output);
+        console.log('fin2')
+        socket.emit('finishedDL', fixedFilename);
+    });
+}
 
+function run_script(socket,command, args, callback) {
+    var filename=""
+    console.log("Starting Process.");
+    var child = child_process.spawn(command, args);
 
+    var scriptOutput = "";
+
+    child.stdout.setEncoding('utf8');
+    child.stdout.on('data', function(data) {
+        // console.log('stdout: ' + data);
+        var lines = data.split('\n');
+        for(var line = 0; line < lines.length; line++){
+            var templine = lines[line]
+            if (templine.indexOf("[Merger]")>-1) { filename = templine}
+
+            if (templine.indexOf("[download]")>-1){
+            
+                console.log(lines[line]);
+                socket.emit('counter', lines[line]);
+                
+            
+                //console.log("\n");
+            }
+        }
+        data=data.toString();
+        scriptOutput+=data;
+        
+    });
+
+    child.stderr.setEncoding('utf8');
+    child.stderr.on('data', function(data) {
+        console.log('stderr: ');
+
+    });
+
+    child.on('close', function(code) {
+        console.log("fin")
+       callback(filename,code);
+    });
+}
 app.use(bodyParser.urlencoded({
     extended: true
 }));
@@ -17,10 +68,12 @@ app.get("/", (res) => {
   });
 io.on('connection', (socket) => {
 
-
+    
     socket.on('counter', msg => {
-        socket.emit('counter', Date());
+        socket.emit('counter', msg);
+        lol(socket,msg)
     })
+    
 
 
 });  

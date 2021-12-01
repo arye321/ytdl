@@ -1,6 +1,7 @@
 #my
 nodemon.json
 *.webm
+*.part
 # Logs
 logs
 *.log

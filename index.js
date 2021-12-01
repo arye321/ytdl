@@ -1,6 +1,9 @@
 const express = require('express')
-const bodyParser = require("body-parser");
 const app = express()
+const bodyParser = require("body-parser");
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
+
 
 
 app.use(bodyParser.urlencoded({
@@ -8,7 +11,13 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(express.static("./"));
 app.use(bodyParser.json());
+io.on('connection', (socket) => {
 
+
+    io.emit('counter', Date());
+
+
+});
 app.get("/", (res) => {
     res.render("index.html");
   });

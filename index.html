@@ -21,6 +21,7 @@
 
 </script>
 <h3 id="hi" style="display:none;">Hi</h3>
+<a download="" id ="download" style="display: none;"> download</a>
 <form id="form" action="">
   <input id="input" autocomplete="off" /><button>Send</button>
 </form>
@@ -36,7 +37,11 @@
   var input = document.getElementById('input');
   
   function download(url) {
-    document.getElementById('my_iframe').src = url;
+    var dl = document.getElementById("download")
+    dl.href=url
+    dl.style.display ="block"
+    dl.innerHTML = "download "+ url
+    dl.click()
   }
   form.addEventListener('submit', function(e) {
     e.preventDefault();

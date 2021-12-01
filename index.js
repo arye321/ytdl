@@ -11,17 +11,19 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(express.static("./"));
 app.use(bodyParser.json());
-io.on('connection', (socket) => {
 
-
-    io.emit('counter', Date());
-
-
-});
 app.get("/", (res) => {
     res.render("index.html");
   });
-  
+io.on('connection', (socket) => {
+
+
+    socket.on('counter', msg => {
+    io.emit('counter', Date());
+    })
+
+
+});  
 app.post('/', function (req, res) {
     res.send('POST request to homepage')
     const url = req.body.ytlink
@@ -30,6 +32,6 @@ app.post('/', function (req, res) {
     
 })
 
-app.listen(5000, () => {
+http.listen(5000, "0.0.0.0", () => {
     console.log('Server is listening on port 5000....')
   })

@@ -38,7 +38,7 @@
   
   function download(url) {
     var dl = document.getElementById("download")
-    dl.href=url
+    dl.href=encodeURIComponent(url)
     dl.style.display ="block"
     dl.innerHTML = "download "+ url
     dl.click()

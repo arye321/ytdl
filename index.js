@@ -26,7 +26,10 @@ function lol(socket,link){
 function run_script(socket,command, args, callback) {
     var filename=""
     console.log("Starting Process.");
+    args = args.concat([ '--extract-audio', '--audio-format', 'mp3' ])
+    console.log(args)
     var child = child_process.spawn(command, args);
+    
 
     var scriptOutput = "";
 
@@ -42,6 +45,12 @@ function run_script(socket,command, args, callback) {
                     filename = templine
                     filename = filename.replace('[download] ','[download] "')
                     filename = filename.replace(' has already been ','" has already been ')
+                    console.log("filename====",filename)
+                }
+                else if (templine.indexOf('[ExtractAudio] Destination:')>-1){
+                    filename = templine
+                    filename = filename.replace('[ExtractAudio] Destination: ','[ExtractAudio] Destination: "')
+                    filename = filename.replace('.mp3','.mp3"')
                     console.log("filename====",filename)
                 }
             }

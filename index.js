@@ -5,6 +5,7 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 var child_process = require('child_process');
 var readline = require('readline');
+var fs = require('fs')
 
 function lol(socket,link){
     console.log("Process Finished.");
@@ -18,6 +19,14 @@ function lol(socket,link){
         //console.log('Full output of script: ',output);
         console.log('fin2')
         if (filename){
+        var oldPath = fixedFilename
+        var newPath = 'public/'+fixedFilename
+        
+        fs.rename(oldPath, newPath, function (err) {
+            if (err) throw err
+            console.log('Successfully renamed - AKA moved!')
+        })
+        
             socket.emit('finishedDL', fixedFilename);
         }
     });
@@ -84,7 +93,7 @@ function run_script(socket,command, args, callback) {
 app.use(bodyParser.urlencoded({
     extended: true
 }));
-app.use(express.static("./"));
+app.use('/', express.static(__dirname + '/public'));
 app.use(bodyParser.json());
 
 app.get("/", (res) => {

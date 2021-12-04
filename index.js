@@ -19,15 +19,8 @@ function lol(socket,link){
         //console.log('Full output of script: ',output);
         console.log('fin2')
         if (filename){
-        var oldPath = fixedFilename
-        var newPath = 'public/'+fixedFilename
-        
-        fs.rename(oldPath, newPath, function (err) {
-            if (err) throw err
-            console.log('Successfully renamed - AKA moved!')
-        })
-        
-            socket.emit('finishedDL', fixedFilename);
+
+        socket.emit('finishedDL', fixedFilename);
         }
     });
 }

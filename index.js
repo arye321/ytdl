@@ -28,7 +28,19 @@ function run_script(socket,command, args, callback) {
     console.log("Starting Process.");
     args = args.concat([ '--extract-audio', '--audio-format', 'mp3' ])
     console.log(args)
-    var child = child_process.spawn(command, args);
+    var dir
+    if (process.platform == 'win32'){
+    dir = __dirname + "\\public"
+    var regex = /\\/g;
+    //console.log(dir.replace(/\\/g,'\\\\'))
+    dir = dir.replace(/\\/g,'\\\\')
+    console.log(dir)
+    }
+    else{
+        dir = __dirname + "/public"
+        console.log(dir)
+    }
+    var child = child_process.spawn(command, args,{cwd:dir});
     
 
     var scriptOutput = "";
@@ -84,7 +96,7 @@ function run_script(socket,command, args, callback) {
 app.use(bodyParser.urlencoded({
     extended: true
 }));
-app.use(express.static("./"));
+app.use('/', express.static(__dirname + '/public'));
 app.use(bodyParser.json());
 
 app.get("/", (res) => {
